@@ -1,0 +1,100 @@
+
+<!-- correct code -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Search App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <style>
+        body {
+            background-color: #868b90;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .main-container {
+            text-align: center;
+            background: rgba(28, 19, 19, 0.058);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+        .search-bar {
+            margin-bottom: 20px;
+        }
+        #movieName {
+            width: 70%;
+            margin-right: 10px;
+        }
+        .result-container {
+            margin-top: 20px;
+        }
+        .card {
+            margin-top: 20px;
+            background-color:#e8edf2;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <h1>🍿 Movie Search App 🎬</h1>
+        <div class="search-bar">
+            <input type="text" id="movieName" class="form-control d-inline" placeholder="Enter movie name" aria-label="Movie name">
+            <button onclick="searchMovie()" id="button" class="btn btn-danger m-4">Search</button>
+        </div>
+        <div id="result" class="result-container"></div>
+    </div>
+
+    <script>
+        function searchMovie() {
+            const moviename = document.getElementById('movieName').value;
+            fetch(`https://www.omdbapi.com/?apikey=fa1c9c03&t=${moviename}`)
+                .then(data => data.json())
+                .then(movie => displayData(movie))
+                .catch(err => {
+                    alert("Movie search failed");
+                });
+        }
+
+        function displayData(movie) {
+            if (movie.Response === "False") {
+                document.getElementById('result').innerHTML = `<div class="alert alert-warning" role="alert">${movie.Error}</div>`;
+                return;
+            }
+
+            let htmlData = `
+            <div class="card">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="${movie.Poster}" class="img-fluid rounded-start" alt="${movie.Title} poster">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h2 class="card-title">${movie.Title}</h2>
+                            <p class="card-text"><strong>Release:</strong> ${movie.Released}</p>
+                            <p class="card-text"><strong>Director:</strong> ${movie.Director}</p>
+                            <p class="card-text"><strong>Writer:</strong> ${movie.Writer}</p>
+                            <p class="card-text"><strong>Actors:</strong> ${movie.Actors}</p>
+                            <p class="card-text"><strong>Language:</strong> ${movie.Language}</p>
+                            <p class="card-text"><strong>Country:</strong> ${movie.Country}</p>
+                            <p class="card-text"><strong>Awards:</strong> ${movie.Awards}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+            
+            document.getElementById('result').innerHTML = htmlData;
+        }
+    </script>
+</body>
+</html>
+
+
